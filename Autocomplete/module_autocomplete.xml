@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_autocomplete" default="compile.module.autocomplete">
+  <dirname property="module.autocomplete.basedir" file="${ant.file.module_autocomplete}"/>
+  
+  <property name="module.jdk.home.autocomplete" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.autocomplete" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.autocomplete" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.autocomplete" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="autocomplete.output.dir" value="${module.autocomplete.basedir}/out/production/Autocomplete"/>
+  <property name="autocomplete.testoutput.dir" value="${module.autocomplete.basedir}/out/test/Autocomplete"/>
+  
+  <path id="autocomplete.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="autocomplete.module.production.classpath">
+    <path refid="${module.jdk.classpath.autocomplete}"/>
+  </path>
+  
+  <path id="autocomplete.runtime.production.module.classpath">
+    <pathelement location="${autocomplete.output.dir}"/>
+  </path>
+  
+  <path id="autocomplete.module.classpath">
+    <path refid="${module.jdk.classpath.autocomplete}"/>
+    <pathelement location="${autocomplete.output.dir}"/>
+  </path>
+  
+  <path id="autocomplete.runtime.module.classpath">
+    <pathelement location="${autocomplete.testoutput.dir}"/>
+    <pathelement location="${autocomplete.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.autocomplete">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.autocomplete">
+    <patternset refid="excluded.from.module.autocomplete"/>
+  </patternset>
+  
+  <path id="autocomplete.module.sourcepath">
+    <dirset dir="${module.autocomplete.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.autocomplete" depends="compile.module.autocomplete.production,compile.module.autocomplete.tests" description="Compile module Autocomplete"/>
+  
+  <target name="compile.module.autocomplete.production" depends="register.custom.compilers" description="Compile module Autocomplete; production classes">
+    <mkdir dir="${autocomplete.output.dir}"/>
+    <javac2 destdir="${autocomplete.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.autocomplete}/javac">
+      <compilerarg line="${compiler.args.autocomplete}"/>
+      <bootclasspath refid="autocomplete.module.bootclasspath"/>
+      <classpath refid="autocomplete.module.production.classpath"/>
+      <src refid="autocomplete.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.autocomplete"/>
+    </javac2>
+    
+    <copy todir="${autocomplete.output.dir}">
+      <fileset dir="${module.autocomplete.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.autocomplete.tests" depends="register.custom.compilers,compile.module.autocomplete.production" description="compile module Autocomplete; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.autocomplete" description="cleanup module">
+    <delete dir="${autocomplete.output.dir}"/>
+    <delete dir="${autocomplete.testoutput.dir}"/>
+  </target>
+</project>

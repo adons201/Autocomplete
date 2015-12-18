@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Autocomplete:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Autocomplete_jar</output-path>
+    <root id="archive" name="Autocomplete.jar">
+      <element id="module-output" name="Autocomplete" />
+    </root>
+  </artifact>
+</component>
